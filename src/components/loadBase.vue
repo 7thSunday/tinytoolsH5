@@ -62,7 +62,7 @@ function dataTransform(sheet) {
 <template>
   <el-container class="container">
     <el-header>{{ hint }}</el-header>
-    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" @change="handleFileChange">
+    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" @input="handleFileChange">
   </el-container>
 </template>
 

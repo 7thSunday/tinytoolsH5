@@ -59,15 +59,12 @@
     <el-row class="row" :gutter="20">
         <el-checkbox-group v-model="selected"  class="check-group">
             <el-checkbox v-for="item in list" :label="item.No" :key="item.No" border="" class="check" >
-                <span class="stu-btn" >
-                    <span>{{ item.No }}</span>
-                    <span class="name">{{ item.name }}</span>
-                </span>
+                {{ item.No }} - {{ item.name }}
             </el-checkbox>
         </el-checkbox-group>
     </el-row>
     <el-drawer direction="btt" v-model="showResText">
-        <el-input type="textarea" v-model="resText"></el-input>
+        <el-input type="textarea" autosize="" v-model="resText"></el-input>
     </el-drawer>
 </template>
 
@@ -76,11 +73,16 @@
         max-width: 600px;
         margin: 0 auto !important;
     } 
+    .check-group {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
     .check {
         margin-bottom: 20px;
-    }
-    .stu-btn .name {
-        padding-left: 30px;
+        width: 30%;
+        margin-right: 0;
     }
     .control-bar {
         display: flex; 

@@ -6,7 +6,6 @@
   import stayManage from './components/stayManage.vue';
   let activeName = ref('home');
 
-  
   let panelList = shallowRef([]);
   let handlecloseTab = (targetName) => {
     if (activeName.value === targetName) {
@@ -22,6 +21,9 @@
       })
     }
     panelList.value = panelList.value.filter((tab) => tab.name !== targetName);
+  }
+  let handleClearData = () => {
+    panelList.value = [];
   }
 
   function addPage (page) {
@@ -53,18 +55,20 @@
 </script>
 
 <template>
-    <el-tabs v-model="activeName" tab-position="bottom" type="border-card" class="frame-box" closable="">
+    <el-tabs v-model="activeName" tab-position="bottom" type="border-card" class="frame-box">
         <el-tab-pane label="主页" name="home" :closable="false">
           <home-page 
             @showStuInfo="showStuInfo"
-            @ManageStayStatus="showManageStay">
+            @ManageStayStatus="showManageStay"
+            @clearData="handleClearData">
           </home-page>
         </el-tab-pane>
         <el-tab-pane 
           v-for="item in panelList" 
           :key="item.name"
           :label="item.title"
-          :name="item.name">
+          :name="item.name"
+          class="panel-box">
           <component :is="item.content" @close="handlecloseTab(item.name)"></component>
         </el-tab-pane>
     </el-tabs>
@@ -73,6 +77,7 @@
 <style>
     .frame-box, .el-tabs__content{
         height: 100%;
+        overflow-y: scroll !important;
     }
     .el-tabs__content  {
         padding-bottom: 45px !important;
@@ -82,4 +87,8 @@
         bottom: 0;
         width: 100%;
     }
+    /* .panel-box {
+      height: 100%;
+      overflow: scroll;
+    } */
 </style>
