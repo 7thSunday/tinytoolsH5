@@ -1,5 +1,5 @@
 <script setup>
-    import { ElInput,ElRow,ElCol,ElDrawer,ElIcon, } from 'element-plus';
+    import { ElInput,ElRow,ElCol,ElDrawer,ElIcon } from 'element-plus';
     import { CircleClose } from '@element-plus/icons'
     import { ref,defineEmits } from 'vue';
 
@@ -33,18 +33,30 @@
         }, 1000);
     }
     function searchText(keywords) {
-        if(keywords==='') return;
-        
+        if(keywords==='') {
+            list.value = JSON.parse(dataString);
+            return;
+        }
+        let key = keywords.toUpperCase();
+        let firstCharCode = keywords.charCodeAt(0);
+        let field = 'name';
+        if(firstCharCode>=48&&firstCharCode<=57) field = 'No';
+        else if((firstCharCode>=65&&firstCharCode<=90) || (firstCharCode>=97&&firstCharCode<=122)) field = 'room';
+        list.value = list.value.filter((item) => item[field].toString().indexOf(key) > -1);
     }
 </script>
 
 <template>
-    <!-- <el-row class="row">
-        <el-input type="text" v-model="inputText" @input="handleSearchInput" placeholder="输入姓名、号数、宿舍查找"></el-input>
-    </el-row> -->
-    <el-icon :size="30" @click="handleClickClose">
-        <circle-close />
-    </el-icon>
+    <div class="fix-box">
+        <div class=" ctl-bar">
+            <el-icon :size="30" @click="handleClickClose" color="#f56c6c">
+                <circle-close />
+            </el-icon>
+            <el-col :span="21">
+                <el-input type="text" v-model="inputText" @input="handleSearchInput" placeholder="输入姓名、号数、宿舍查找" clearable></el-input>
+            </el-col>
+        </div>
+    </div>
       
     <el-row class="row" :gutter="20">
         <el-col v-for="(item,index) in list" :key="index" :span="8" class="button-box">
@@ -55,11 +67,11 @@
         </el-col>
     </el-row>
     <el-drawer v-model="showDetails" direction="btt">
-        <el-row>
-            <span>{{ infoNo }}号</span>
+        <el-row class="info-row">
+            <span>{{ infoNo }}号-</span>
             <span>{{ infoName }}</span>
         </el-row>
-        <el-row>
+        <el-row class="info-row">
             <span>宿舍：{{ infoRoom }}</span>
         </el-row>
     </el-drawer>
@@ -69,6 +81,22 @@
     .row {
         max-width: 600px;
         margin: 0 auto !important;
+        padding-top: 55px;
+    }
+    .fix-box {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+    }
+    .ctl-bar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 60px;
+        align-items: center;
+        background: #d9ecff;
+        padding: 0 15px;
     }
     .button-box {
         margin-top: 20px;
@@ -85,5 +113,8 @@
     .stu-btn:hover {
         border-color: #409eff;
         color: #409eff;
+    }
+    .info-row {
+        font-size: 20px;
     }
 </style>

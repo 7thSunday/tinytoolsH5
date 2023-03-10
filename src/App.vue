@@ -80,12 +80,13 @@
         overflow-y: scroll !important;
     }
     .el-tabs__content  {
-        padding-bottom: 45px !important;
+        padding: 0 0 45px 0 !important;
     }
     .el-tabs__header.is-bottom {
         position: absolute;
         bottom: 0;
         width: 100%;
+        z-index: 1;
     }
     /* .panel-box {
       height: 100%;
