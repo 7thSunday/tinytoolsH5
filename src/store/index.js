@@ -3,15 +3,15 @@ import { defineStore } from "pinia";
 export const mainStore = defineStore('main', {
     state: () => {
         return {
-            stayFlag: false
+            operationFlag: false
         }
     },
     getters: {
-        getStayFlag: state => state.stayFlag
+        getOperationFlag: state => state.operationFlag
     },
     actions: {
-        setStayFlag(val) {
-            this.stayFlag = val;
+        setOperationFlag(val) {
+            this.operationFlag = val;
         }
     }
 })

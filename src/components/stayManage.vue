@@ -1,11 +1,27 @@
 <script setup>
     import { ref,defineEmits } from 'vue';
-    import { ElCheckboxGroup,ElCheckbox,ElRow,ElCol,ElIcon,ElRadioGroup,ElRadio,ElButton,ElMessage,ElDrawer,ElInput } from 'element-plus';
+    import { ElCheckboxGroup,ElCheckbox,ElRow,ElCol,ElIcon,ElSelect,ElOption,ElButton,ElMessage,ElDrawer,ElInput } from 'element-plus';
     import { CircleClose } from '@element-plus/icons'
     import { mainStore } from '../store';
     import { storeToRefs } from 'pinia';
     const store = mainStore();
-    const { stayFlag } = storeToRefs(store);
+    const { operationFlag } = storeToRefs(store);
+
+    let optionsList = ref([
+        {
+            value: 'stay',
+            label: '留宿'
+        },{
+            value: 'leave',
+            label: '不留宿'
+        },{
+            value: 'ill',
+            label: '身体不适'
+        },{
+            value: 'grab',
+            label: '拿东西'
+        },
+    ]);
 
     let dataString = localStorage.getItem('data');
     let list = ref(JSON.parse(dataString));
@@ -23,25 +39,37 @@
             ElMessage.warning('至少要选一个学生哦~');
             return;
         }
-        
-        if(!stayFlag.value) {
-            let res = '老师好，';
-            for(let i of selected.value) {
-                for(let item of list.value) {
-                    if(item.No == i) {
-                        res += item.room + item.name + '、';
-                        break;
-                    }
+
+        let res = '';
+        for(let i of selected.value) {
+            for(let item of list.value) {
+                if(item.No == i) {
+                    res += item.room + item.name + '、';
+                    break;
                 }
             }
-            res = res.slice(0,-1);
-            res += '今晚请假不留宿，麻烦老师登记，谢谢。'
-            resText.value = res;
-            showResText.value = true;
-        } else {
-            resText.value = '功能开发中，期待一下吧';
-            showResText.value = true;
         }
+        res = res.slice(0,-1);
+        
+        switch(operationFlag.value) 
+        {
+            case 'leave':
+                res = '老师好，' + res + '今晚请假不留宿，麻烦老师登记，谢谢。';
+                break;
+            case 'stay':
+                res = '老师好，这周末留宿的学生名单为：' + res + '，麻烦登记，谢谢。';
+                break;
+            case 'ill':
+                res = '老师好，' + res + '同学身体不适，回宿舍休息，麻烦开下门，谢谢。';
+                break;
+            case 'grab':
+                res = '老师好，' + res + '同学回宿舍拿东西，麻烦开门，谢谢。';
+                break;
+            default:
+                res = '如果你能看到这个，那么程序出错了/(ㄒoㄒ)/~~';
+        } 
+        resText.value = res;
+        showResText.value = true;
     }
 
     let timer = null;
@@ -64,23 +92,42 @@
         else if((firstCharCode>=65&&firstCharCode<=90) || (firstCharCode>=97&&firstCharCode<=122)) field = 'room';
         list.value = list.value.filter((item) => item[field].toString().indexOf(key) > -1);
     }
+
+    
+    let handleClickClearSelected = () => {
+        selected.value = [];
+    }
+    let handleChangeOperation = () => {
+        // selected.value = [];
+        return;
+    }
 </script>
 
 <template>
     <div class="fix-box">
         <div class=" ctl-bar">
             <el-row class="top-row">
-                <el-icon :size="30" @click="handleClickClose" color="#f56c6c">
-                    <circle-close />
-                </el-icon>
-                <el-radio-group v-model="stayFlag">
-                    <el-radio  :label="true">留宿</el-radio>
-                    <el-radio  :label="false">不留宿</el-radio>
-                </el-radio-group>
-                <el-button type="primary" @click="handleClickGenTxt">生成回复文本</el-button>
+                <el-col :span="2">
+                    <el-icon :size="30" @click="handleClickClose" color="#f56c6c">
+                        <circle-close />
+                    </el-icon>
+                </el-col>
+                <el-col :span="11">
+                    <el-select v-model="operationFlag" @change="handleChangeOperation" class="col-child">
+                        <el-option v-for="item in optionsList"  :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="8">
+                    <el-button type="primary" class="col-child" @click="handleClickGenTxt">生成回复文本</el-button>
+                </el-col>
             </el-row>
-            <el-row>
-                <el-input type="text" v-model="inputText" @input="handleSearchInput" placeholder="输入姓名、号数、宿舍查找" clearable></el-input>
+            <el-row class="top-row">
+                <el-col :span="6">
+                    <el-button type="primary" @click="handleClickClearSelected">清空选中</el-button>
+                </el-col>
+                <el-col :span="17">
+                    <el-input type="text" v-model="inputText" @input="handleSearchInput" placeholder="输入姓名、号数、宿舍查找" clearable></el-input>
+                </el-col>
             </el-row>
         </div>
     </div>
@@ -102,7 +149,6 @@
         margin: 0 auto !important;
     } 
     .top-row {
-        width: 100%;
         justify-content: space-between;
         margin-bottom: 15px;
     }
@@ -116,7 +162,7 @@
     }
     .check {
         margin-bottom: 20px;
-        width: 30%;
+        width: 32%;
         margin-right: 0;
     }
     .fix-box {
@@ -134,5 +180,9 @@
     .txtarea {
         font-size: 18px;
         height: 100%;
+        margin-bottom: 20px;
+    }
+    .col-child {
+        width: 100%;
     }
 </style>

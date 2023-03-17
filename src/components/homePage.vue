@@ -43,7 +43,7 @@
     }
     let handleClickManageStay = status => {
         emits('ManageStayStatus');
-        store.stayFlag = status;
+        store.operationFlag = status;
     }
 </script>
 
@@ -56,10 +56,18 @@
         </el-row>
         <el-row class="row">
             <el-col :span="12">
-                <el-button size="large" type="primary" @click="handleClickManageStay(true)" :disabled="btnDisabled">谁要留宿</el-button>
+                <el-button size="large" type="primary" @click="handleClickManageStay('stay')" :disabled="btnDisabled">谁要留宿</el-button>
             </el-col>
             <el-col :span="12">
-                <el-button size="large" type="primary" @click="handleClickManageStay(false)" :disabled="btnDisabled">谁不留宿</el-button>
+                <el-button size="large" type="primary" @click="handleClickManageStay('leave')" :disabled="btnDisabled">谁不留宿</el-button>
+            </el-col>
+        </el-row>
+        <el-row class="row">
+            <el-col :span="12">
+                <el-button size="large" type="primary" @click="handleClickManageStay('ill')" :disabled="btnDisabled">谁身体不适</el-button>
+            </el-col>
+            <el-col :span="12">
+                <el-button size="large" type="primary" @click="handleClickManageStay('grab')" :disabled="btnDisabled">谁要拿东西</el-button>
             </el-col>
         </el-row>
         <el-row class="row">
