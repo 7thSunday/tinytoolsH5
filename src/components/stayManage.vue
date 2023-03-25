@@ -101,6 +101,18 @@
         // selected.value = [];
         return;
     }
+
+    let handleClickCopy = () => {
+        const inputo = document.createElement("input");
+        document.body.appendChild(inputo);
+        inputo.value = resText.value;
+        inputo.setAttribute('readOnly', 'readOnly')
+        inputo.select();
+        document.execCommand("Copy");
+        document.body.removeChild(inputo);
+        ElMessage.success('已复制到剪贴板~');
+        showResText.value = false;
+    }
 </script>
 
 <template>
@@ -138,8 +150,13 @@
             </el-checkbox>
         </el-checkbox-group>
     </el-row>
-    <el-drawer direction="btt" v-model="showResText">
-        <el-input class="txtarea" type="textarea" autosize="" :rows="5" v-model="resText"></el-input>
+    <el-drawer direction="btt" v-model="showResText" :with-header="false">
+        <!-- <el-input class="txtarea" type="textarea" autosize="" :rows="5" v-model="resText"></el-input> -->
+        <!-- <input class="txtarea" type="textarea" readonly v-model="resText"> -->
+        <p class="txtarea">{{ resText }}</p>
+        <div class="drawer-btn-box">
+            <el-button type="primary" @click="handleClickCopy">复制到剪贴板</el-button>
+        </div>
     </el-drawer>
 </template>
 
@@ -178,11 +195,15 @@
         padding: 15px;
     }
     .txtarea {
-        font-size: 18px;
-        height: 100%;
+        font-size: 16px;
+        margin: 0;
         margin-bottom: 20px;
     }
     .col-child {
         width: 100%;
+    }
+    .drawer-btn-box {
+        display: flex;
+        justify-content: flex-end;
     }
 </style>
