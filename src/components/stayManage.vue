@@ -40,14 +40,27 @@
             return;
         }
 
-        let res = '';
+        let roomCollection = {};
         for(let i of selected.value) {
             for(let item of list.value) {
                 if(item.No == i) {
-                    res += item.room + item.name + '、';
+                    if(!roomCollection.hasOwnProperty(item.room)) {
+                        roomCollection[item.room] = [];
+                    }
+                    roomCollection[item.room].push(item);
                     break;
                 }
             }
+        }
+        
+        let res = '';
+        for(let i in roomCollection) {
+            res += i;
+            for(let j of roomCollection[i]) {
+                res += j.name + '、';
+            }
+            res = res.slice(0,-1);
+            res += '，';
         }
         res = res.slice(0,-1);
         
